@@ -30,6 +30,10 @@ if sys.version_info >= (3, 13):
         if len(h) >= 12 and h.startswith(b'RIFF') and h[8:12] == b'WEBP':
             return 'webp'
     
+    def test_exr(h, f):
+        if h.startswith(b'\x76\x2f\x31\x01'):
+            return 'exr'
+    
     def what(file, h=None):
         if h is None:
             if isinstance(file, (str, os.PathLike)):
@@ -40,7 +44,7 @@ if sys.version_info >= (3, 13):
                 h = file.read(32)
                 file.seek(loc)
                 
-        tests = (test_jpeg, test_png, test_gif, test_tiff, test_bmp, test_webp)
+        tests = (test_jpeg, test_png, test_gif, test_tiff, test_bmp, test_webp, test_exr)
         for test_function in tests:
             res = test_function(h, None)
             if res:
@@ -60,13 +64,11 @@ from pyrogram import Client, idle
 from pyromod import listen  
 from pyrogram.errors import ApiIdInvalid, ApiIdPublishedFlood, AccessTokenInvalid
 
-# Configure logging
+# Configure logging to show in render.com console
 logging.basicConfig(
-    level=logging.INFO, 
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout)  # Ensure logs go to render.com console
-    ]
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 logging.getLogger("pymongo").setLevel(logging.ERROR)
