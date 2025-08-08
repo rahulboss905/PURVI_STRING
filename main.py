@@ -3,9 +3,9 @@ import os
 import warnings
 from types import ModuleType
 
-# Backport imghdr for Python 3.13+
+# Comprehensive imghdr backport for Python 3.13
 if sys.version_info >= (3, 13):
-    # Create a minimal imghdr module
+    # Create a robust imghdr module replacement
     def test_jpeg(h, f):
         if h[6:10] in (b'JFIF', b'Exif') or h.startswith(b'\xff\xd8'):
             return 'jpeg'
@@ -17,6 +17,10 @@ if sys.version_info >= (3, 13):
     def test_gif(h, f):
         if h[:6] in (b'GIF87a', b'GIF89a'):
             return 'gif'
+    
+    def test_tiff(h, f):
+        if h[:2] in (b'MM', b'II'):
+            return 'tiff'
     
     def test_bmp(h, f):
         if h.startswith(b'BM'):
@@ -35,8 +39,10 @@ if sys.version_info >= (3, 13):
                 loc = file.tell()
                 h = file.read(32)
                 file.seek(loc)
-        for tf in (test_jpeg, test_png, test_gif, test_bmp, test_webp):
-            res = tf(h, None)
+                
+        tests = (test_jpeg, test_png, test_gif, test_tiff, test_bmp, test_webp)
+        for test_function in tests:
+            res = test_function(h, None)
             if res:
                 return res
         return None
@@ -57,10 +63,14 @@ from pyrogram.errors import ApiIdInvalid, ApiIdPublishedFlood, AccessTokenInvali
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, 
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout)  # Ensure logs go to render.com console
+    ]
 )
 
 logging.getLogger("pymongo").setLevel(logging.ERROR)
+logger = logging.getLogger(__name__)
 
 # Initialize start time
 StartTime = time.time()
@@ -76,23 +86,25 @@ app = Client(
 )
 
 if __name__ == "__main__":
-    print("𝙰𝚕𝚙𝚑𝚊 𝚂𝚎𝚜𝚜𝚒𝚘𝚗 𝙶𝚎𝚗 𝚜𝚝𝚊𝚛𝚝𝚒𝚗𝚐...")
+    logger.info("𝙰𝚕𝚙𝚑𝚊 𝚂𝚎𝚜𝚜𝚒𝚘𝚗 𝙶𝚎𝚗 𝚜𝚝𝚊𝚛𝚝𝚒𝚗𝚐...")
     try:
         app.start()
-    except ApiIdInvalid:
-        raise Exception("Your API_ID is not valid.")
-    except ApiIdPublishedFlood:
-        raise Exception("Your API_ID/API_HASH is flood banned.")
-    except AccessTokenInvalid:
-        raise Exception("Your BOT_TOKEN is not valid.")
+        logger.info("Pyrogram client started successfully")
+    except (ApiIdInvalid, ApiIdPublishedFlood, AccessTokenInvalid) as e:
+        logger.exception("Authentication failed: ")
+        raise
     except Exception as e:
-        logging.error(f"An unexpected error occurred: {e}")
+        logger.exception("Fatal error during startup: ")
         raise
 
-    uname = app.get_me().username
-    print(f"@{uname} NOW ALPHA SESSION GEN IS READY TO GEN SESSION")
-    
-    idle()
-    
-    app.stop()
-    print("𝐒𝐞𝐬𝐬𝐢𝐨𝐧 𝐆𝐞𝐧𝐞𝐫𝐚𝐭𝐢𝐧𝐠 𝐒𝐭𝐨𝐩𝐩...")
+    try:
+        uname = app.get_me().username
+        logger.info(f"@{uname} NOW ALPHA SESSION GEN IS READY TO GEN SESSION")
+        idle()
+    except KeyboardInterrupt:
+        logger.info("Keyboard interrupt received")
+    except Exception as e:
+        logger.exception("Runtime error: ")
+    finally:
+        app.stop()
+        logger.info("𝐒𝐞𝐬𝐬𝐢𝐨𝐧 𝐆𝐞𝐧𝐞𝐫𝐚𝐭𝐢𝐧𝐠 𝐒𝐭𝐨𝐩𝐩𝐞𝐝")
