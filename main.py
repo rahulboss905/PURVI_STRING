@@ -1,3 +1,52 @@
+import sys
+import os
+import warnings
+from types import ModuleType
+
+# Backport imghdr for Python 3.13+
+if sys.version_info >= (3, 13):
+    # Create a minimal imghdr module
+    def test_jpeg(h, f):
+        if h[6:10] in (b'JFIF', b'Exif') or h.startswith(b'\xff\xd8'):
+            return 'jpeg'
+    
+    def test_png(h, f):
+        if h.startswith(b'\211PNG\r\n\032\n'):
+            return 'png'
+    
+    def test_gif(h, f):
+        if h[:6] in (b'GIF87a', b'GIF89a'):
+            return 'gif'
+    
+    def test_bmp(h, f):
+        if h.startswith(b'BM'):
+            return 'bmp'
+    
+    def test_webp(h, f):
+        if len(h) >= 12 and h.startswith(b'RIFF') and h[8:12] == b'WEBP':
+            return 'webp'
+    
+    def what(file, h=None):
+        if h is None:
+            if isinstance(file, (str, os.PathLike)):
+                with open(file, 'rb') as f:
+                    h = f.read(32)
+            else:
+                loc = file.tell()
+                h = file.read(32)
+                file.seek(loc)
+        for tf in (test_jpeg, test_png, test_gif, test_bmp, test_webp):
+            res = tf(h, None)
+            if res:
+                return res
+        return None
+
+    # Create and inject the module
+    imghdr_module = ModuleType('imghdr')
+    imghdr_module.what = what
+    sys.modules['imghdr'] = imghdr_module
+    warnings.warn("Using custom imghdr backport for Python 3.13+", RuntimeWarning)
+
 import config
 import time
 import logging
