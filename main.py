@@ -2,6 +2,9 @@ import sys
 import os
 import warnings
 from types import ModuleType
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import threading
+import time
 
 # Comprehensive imghdr backport for Python 3.13
 if sys.version_info >= (3, 13):
@@ -54,7 +57,6 @@ if sys.version_info >= (3, 13):
     warnings.warn("Using custom imghdr backport for Python 3.13+", RuntimeWarning)
 
 import config
-import time
 import logging
 from pyrogram import Client, idle
 from pyromod import listen  
@@ -70,8 +72,24 @@ logging.basicConfig(
 logging.getLogger("pymongo").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 
-# Initialize start time
-StartTime = time.time()
+# Simple HTTP server for Render.com health checks
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == '/health':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(b'OK')
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+def run_http_server():
+    port = int(os.environ.get("PORT", 8080))
+    server_address = ('', port)
+    httpd = HTTPServer(server_address, HealthCheckHandler)
+    logger.info(f"HTTP server running on port {port}")
+    httpd.serve_forever()
 
 # Initialize the Client
 app = Client(
@@ -84,6 +102,10 @@ app = Client(
 )
 
 if __name__ == "__main__":
+    # Start HTTP server in a separate thread
+    http_thread = threading.Thread(target=run_http_server, daemon=True)
+    http_thread.start()
+    
     logger.info("𝙰𝚕𝚙𝚑𝚊 𝚂𝚎𝚜𝚜𝚒𝚘𝚗 𝙶𝚎𝚗 𝚜𝚝𝚊𝚛𝚝𝚒𝚗𝚐...")
     try:
         app.start()
