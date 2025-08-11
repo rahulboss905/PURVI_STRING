@@ -5,10 +5,10 @@
 <h1 align="center"
   
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
-<img src="https://readme-typing-svg.herokuapp.com?color=FF0085&width=620&lines=🍁+🚩+𝗣𝗢𝗪𝗘𝗥𝗘𝗗+𝗕𝗬+𝗥𝗔𝗨𝗦𝗛𝗔𝗡+𝗞𝗜𝗡𝗚+𝗔𝗥𝗔+🚩+🍁"></b></h3>
+<img src="https://readme-typing-svg.herokuapp.com?color=FF0085&width=620&lines=🍁+🚩+𝗣𝗢𝗪𝗘𝗥𝗘𝗗+𝗕𝗬+𝐓𝐞𝐚𝐦+𝐒𝐞𝐜𝐫𝐞𝐭+🚩+🍁"></b></h3>
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 <h1 align="center"><b>𝐓ᴇᴀᴍ 𝐏ᴜʀᴠɪ 𝐁ᴏᴛs</b></h1>
-<p align="center"><a href="https://ll_ALPHA_BABY_lll"><img src="https://files.catbox.moe/ppvvg0.jpg" width="500"></a></p>
+<p align="center"><a href="https://t.me/Mr_rahul090"><img src="https://files.catbox.moe/ppvvg0.jpg" width="500"></a></p>
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
 
@@ -26,11 +26,11 @@
 </h3>
 
 <p align="center">
-<a href="https://t.me/PURVI_SUPPORT"><img src="https://img.shields.io/badge/-Support%20Group-blue.svg?style=for-the-badge&logo=Telegram"></a>
+<a href="https://t.me/team_secrat_bots"><img src="https://img.shields.io/badge/-Support%20Group-blue.svg?style=for-the-badge&logo=Telegram"></a>
 </p>
 
 <p align="center">
-<a href="(https://t.me/https://t.me/PURVI_UPDATES"><img src="https://img.shields.io/badge/-Support%20Channel-blue.svg?style=for-the-badge&logo=Telegram"></a>
+<a href="(https://t.me/team_secrat_bots"><img src="https://img.shields.io/badge/-Support%20Channel-blue.svg?style=for-the-badge&logo=Telegram"></a>
 </p>
 
 
