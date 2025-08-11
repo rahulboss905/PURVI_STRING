@@ -2,7 +2,6 @@ import sys
 import os
 import warnings
 from types import ModuleType
-from http.server import BaseHTTPRequestHandler, HTTPServer
 import threading
 import time
 
@@ -61,6 +60,7 @@ import logging
 from pyrogram import Client, idle
 from pyromod import listen  
 from pyrogram.errors import ApiIdInvalid, ApiIdPublishedFlood, AccessTokenInvalid
+from flask import Flask  # Import Flask for health checks
 
 # Configure logging to show in render.com console
 logging.basicConfig(
@@ -72,26 +72,21 @@ logging.basicConfig(
 logging.getLogger("pymongo").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 
-# Simple HTTP server for Render.com health checks
-class HealthCheckHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == '/health':
-            self.send_response(200)
-            self.send_header('Content-type', 'text/plain')
-            self.end_headers()
-            self.wfile.write(b'OK')
-        else:
-            self.send_response(404)
-            self.end_headers()
+# Initialize Flask app for health checks
+app_flask = Flask(__name__)
 
-def run_http_server():
+@app_flask.route('/health')
+def health_check():
+    """Simple health check endpoint for Render.com"""
+    return 'OK', 200
+
+def run_flask_app():
+    """Run the Flask app for health checks"""
     port = int(os.environ.get("PORT", 8080))
-    server_address = ('', port)
-    httpd = HTTPServer(server_address, HealthCheckHandler)
-    logger.info(f"HTTP server running on port {port}")
-    httpd.serve_forever()
+    logger.info(f"Starting Flask health check server on port {port}")
+    app_flask.run(host='0.0.0.0', port=port)
 
-# Initialize the Client
+# Initialize the Pyrogram Client
 app = Client(
     "Anonymous",
     api_id=config.API_ID,
@@ -102,9 +97,9 @@ app = Client(
 )
 
 if __name__ == "__main__":
-    # Start HTTP server in a separate thread
-    http_thread = threading.Thread(target=run_http_server, daemon=True)
-    http_thread.start()
+    # Start Flask health check server in a separate thread
+    flask_thread = threading.Thread(target=run_flask_app, daemon=True)
+    flask_thread.start()
     
     logger.info("𝙰𝚕𝚙𝚑𝚊 𝚂𝚎𝚜𝚜𝚒𝚘𝚗 𝙶𝚎𝚗 𝚜𝚝𝚊𝚛𝚝𝚒𝚗𝚐...")
     try:
