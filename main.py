@@ -9,7 +9,8 @@ import time
 if sys.version_info >= (3, 13):
     # Create a robust imghdr module replacement
     def test_jpeg(h, f):
-        if len(h) >= 10 and (h[6:10] in (b'JFIF', b'Exif') or h.startswith(b'\xff\xd8'):
+        # Fixed the parenthesis balance in this condition
+        if len(h) >= 10 and (h[6:10] in (b'JFIF', b'Exif') or h.startswith(b'\xff\xd8')):
             return 'jpeg'
     
     def test_png(h, f):
