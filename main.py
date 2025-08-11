@@ -9,7 +9,7 @@ import time
 if sys.version_info >= (3, 13):
     # Create a robust imghdr module replacement
     def test_jpeg(h, f):
-        if len(h) >= 10 and (h[6:10] in (b'JFIF', b'Exif') or h.startswith(b'\xff\xd8')):
+        if len(h) >= 10 and (h[6:10] in (b'JFIF', b'Exif') or h.startswith(b'\xff\xd8'):
             return 'jpeg'
     
     def test_png(h, f):
@@ -75,6 +75,11 @@ logger = logging.getLogger(__name__)
 # Initialize Flask app for health checks
 app_flask = Flask(__name__)
 
+@app_flask.route('/')
+def home():
+    """Root endpoint to prevent 404 errors"""
+    return "Bot is running. Health check at /health", 200
+
 @app_flask.route('/health')
 def health_check():
     """Simple health check endpoint for Render.com"""
@@ -84,7 +89,7 @@ def run_flask_app():
     """Run the Flask app for health checks"""
     port = int(os.environ.get("PORT", 8080))
     logger.info(f"Starting Flask health check server on port {port}")
-    app_flask.run(host='0.0.0.0', port=port)
+    app_flask.run(host='0.0.0.0', port=port, use_reloader=False, threaded=True)
 
 # Initialize the Pyrogram Client
 app = Client(
